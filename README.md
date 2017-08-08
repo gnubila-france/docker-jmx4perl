@@ -127,7 +127,7 @@ Operations:
 ```
 (for more examples, view Roland Huß' excellent [YouTube Tutorial](https://www.youtube.com/watch?v=y9TuGzxD2To)!)
 
-## check_jmx4perl (or use `make check_jmx4perl`)
+## check_jmx4perl (or use `make nagios`)
 
 ```
 docker run \
@@ -138,12 +138,13 @@ docker run \
         --link jolokia-default:jolokia \
         bodsch/docker-jmx4perl:latest \
         check_jmx4perl --url http://jolokia:8080/jolokia \
-        --name memory_used \
-        --mbean java.lang:type=Memory \
-        --attribute HeapMemoryUsage \
-        --path used \
-        --critical 10000000 \
-        --warning   5000000
-CRITICAL - memory_used : Threshold '10000000' failed for value 142433120 | memory_used=142433120;5000000;10000000
-
+        --mbean java.lang:type=Memory    \
+        --attribute HeapMemoryUsage      \
+        --path used                      \
+        --base java.lang:type=Memory/HeapMemoryUsage/max \
+        --warning 80                     \
+        --critical 90
+OK - [java.lang:type=Memory,HeapMemoryUsage,used] : In range 0.88% (131884848 / 14965276672) | [java.lang:type#Memory,HeapMemoryUsage,used]=131884848;11972221337.6;13468749004.8;0;14965276672
 ```
+
+(for more examples, see the `jmx4perl` [documentation](http://search.cpan.org/~roland/jmx4perl-1.12/scripts/check_jmx4perl))
