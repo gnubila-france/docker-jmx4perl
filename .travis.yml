@@ -1,0 +1,13 @@
+sudo: required
+group: edge
+
+services:
+  - docker
+
+install:
+  - travis_retry docker build --tag bodsch/docker-jmx4perl .
+  - docker run --detach --name jmx4perl bodsch/docker-jmx4perl
+
+script:
+  - true
+
