@@ -18,85 +18,46 @@ RUN \
   apk --quiet --no-cache upgrade && \
   apk --quiet --no-cache add \
     build-base \
-    bind-tools \
-    drill \
-    curl \
     perl \
     perl-dev \
-    perl-json \
-    perl-lwp-useragent-determined \
     readline \
     readline-dev \
     ncurses-libs \
-    ncurses-dev
-
-COPY build/ /build/
-
-RUN \
-  curl \
-    --silent \
-    --location \
-    --output /bin/cpanm \
-    https://cpanmin.us/ -o cpanm && \
-    chmod +x /bin/cpanm && \
-  curl \
-    --silent \
-    --location \
-    --output /tmp/jmx4perl-${VERSION}.tar.gz \
-    http://search.cpan.org/CPAN/authors/id/R/RO/ROLAND/jmx4perl-${VERSION}.tar.gz
-
-RUN \
-  cd /tmp && \
-  tar -xzf jmx4perl-${VERSION}.tar.gz
-
-RUN \
-  cpanm IO::Socket::Multicast && \
-  cpanm Config::General && \
-  cpanm Crypt::Blowfish_PP && \
-  cpanm Module::Find && \
-  cpanm Monitoring::Plugin && \
-  cpanm Sys::SigAction && \
-  cpanm File::SearchPath && \
-  cpanm ExtUtils::MakeMaker && \
-  cpanm PJB/Term-Clui-1.70.tar.gz && \
-  cpanm Term::ReadLine::Gnu && \
-  cpanm Term::ShellUI && \
-  cpanm Term::Size
-
-RUN \
-  cd /tmp && \
-  tar -xzf jmx4perl-${VERSION}.tar.gz && \
-  cd /tmp/jmx4perl-${VERSION} && \
-  mv /build/build.pl . && \
-  perl ./build.pl && \
-  ./Build && \
-  ./Build test && \
-  ./Build install
-
-RUN \
+    ncurses-dev \
+    libxml2-dev \
+    expat-dev \
+    gnupg1 \
+    openssl-dev \
+    wget && \
+  cpan App::cpanminus < /dev/null && \
+  cpanm --quiet IO::Socket::Multicast && \
+  cpanm --quiet Config::General && \
+  cpanm --quiet Crypt::Blowfish_PP && \
+  cpanm --quiet Module::Find && \
+  cpanm --quiet Monitoring::Plugin && \
+  cpanm --quiet Sys::SigAction && \
+  cpanm --quiet File::SearchPath && \
+  cpanm --quiet ExtUtils::MakeMaker && \
+  cpanm --quiet PJB/Term-Clui-1.70.tar.gz && \
+  cpanm --quiet Term::ReadLine::Gnu && \
+  cpanm --quiet Term::ShellUI && \
+  cpanm --quiet Term::Size && \
+  cpanm --quiet ROLAND/jmx4perl-${VERSION}.tar.gz && \
   apk del --purge \
     build-base \
-    curl \
     perl-dev \
     readline-dev \
-    ncurses-dev && \
+    ncurses-dev \
+    libxml2-dev \
+    expat-dev \
+    gnupg1 \
+    openssl-dev \
+    wget && \
   rm -rf \
     /root/.cpanm \
     /tmp/* \
     /var/cache/apk/*
 
-CMD /bin/sh
+CMD [ "jmx4perl", "--version" ]
 
 # ---------------------------------------------------------------------------------------
-#   curl \
-#     --silent \
-#     --location \
-#     --output /tmp/ExtUtils-MakeMaker-7.30.tar.gz \
-#     http://search.cpan.org/CPAN/authors/id/B/BI/BINGOS/ExtUtils-MakeMaker-7.30.tar.gz
-#
-# RUN \
-#   cd /tmp/ExtUtils-MakeMaker-7.30 && \
-#   perl Makefile.PL && \
-#   make && \
-#   make test && \
-#   make install
