@@ -101,8 +101,6 @@ nagios:
 		--warning 80                     \
 		--critical 90
 
-
-
 exec:
 	docker exec \
 		--interactive \
