@@ -70,22 +70,7 @@ jmx4perl:
 		$(NS)/$(REPO):$(VERSION) \
 		jmx4perl --product tomcat http://jolokia:8080/jolokia
 
-# nagios:
-# 	docker run \
-# 		--rm \
-# 		--name $(NAME)-$(INSTANCE) \
-# 		--interactive \
-# 		--tty \
-# 		--link jolokia-default:jolokia \
-# 		$(NS)/$(REPO):$(VERSION) \
-# 		check_jmx4perl --url http://jolokia:8080/jolokia \
-# 		--name memory_used \
-# 		--mbean java.lang:type=Memory \
-# 		--attribute HeapMemoryUsage \
-# 		--path used \
-# 		--critical 10000000 \
-# 		--warning   5000000
-nagios:
+check_jmx4perl:
 	docker run \
 		--rm \
 		--name $(NAME)-$(INSTANCE) \
@@ -100,8 +85,6 @@ nagios:
 		--base java.lang:type=Memory/HeapMemoryUsage/max \
 		--warning 80                     \
 		--critical 90
-
-
 
 exec:
 	docker exec \

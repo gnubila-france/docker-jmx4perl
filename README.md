@@ -72,6 +72,37 @@ Runtime:
    Starttime           : Tue Aug  8 11:14:38 2017
 ```
 
+```
+docker run \
+        --rm \
+        --name jmx4perl-default \
+        --interactive \
+        --tty \
+        --link jolokia-default:jolokia \
+        bodsch/docker-jmx4perl:latest \
+        jmx4perl http://jolokia:8080/jolokia read java.lang:type=Memory
+{
+  HeapMemoryUsage => {
+    committed => 241631232,
+    init => 268435456,
+    max => 1049034752,
+    used => 71324552
+  },
+  NonHeapMemoryUsage => {
+    committed => 30343168,
+    init => 2555904,
+    max => -1,
+    used => 29031872
+  },
+  ObjectName => {
+    objectName => 'java.lang:type=Memory'
+  },
+  ObjectPendingFinalizationCount => 0,
+  Verbose => '[false]'
+}
+```
+
+
 ## j4psh (or use `make j4psh`)
 
 ```
