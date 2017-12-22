@@ -27,7 +27,7 @@ You need an running `jolokia` Service:
 
     docker run --rm -ti --name jolokia-default bodsch/docker-jolokia
 
-Then you cant run the jmx4perl Tools:
+Then you can run the jmx4perl Tools:
 
 
 ## jmx4perl (or use `make jmx4perl`)
