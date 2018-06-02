@@ -1,0 +1,23 @@
+---
+
+version: '3.3'
+
+services:
+
+  jolokia:
+    image: bodsch/docker-jolokia
+    hostname: jolokia
+    container_name: jolokia
+    ports:
+      - 8080:8080
+
+  jmx4perl:
+    build: .
+    container_name: jmx4perl
+    hostname: jmx4perl
+    links:
+      - jolokia:jolokia
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    # command: j4psh http://jolokia:8080/jolokia
+    command: jmx4perl --product tomcat http://jolokia:8080/jolokia

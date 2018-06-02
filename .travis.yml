@@ -1,20 +1,19 @@
 sudo: required
 group: edge
-
 services:
-  - docker
-
-install:
-  - travis_retry docker build --tag bodsch/docker-jmx4perl .
-  - docker run --detach --name jmx4perl bodsch/docker-jmx4perl
-
-script:
-  - true
-
-after_success:
-  - |
-    [ "${TRAVIS_BRANCH}" == "master" ] && curl \
-      --request POST \
-      --header "Content-Type: application/json"  \
-      --data '{"source_type":"Branch","source_name":"master"}' \
-      https://registry.hub.docker.com/u/bodsch/docker-jmx4perl/trigger/${DOCKER_HUB_TOKEN}/
+- docker
+jobs:
+  include:
+  - stage: build, test and push docker image
+    script:
+    - make build
+    - docker-compose --file docker-compose-example.yml up --build -d
+    - docker-compose --file docker-compose-example.yml kill
+    - docker-compose --file docker-compose-example.yml down
+    - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+    - docker push ${DOCKER_USERNAME}/docker-jmx4perl:latest
+    - docker logout
+env:
+  global:
+    DOCKER_USERNAME: bodsch
+    secure: AKAMZYSJNhFK5kl1vtNJfv5FuRtSlff2OsGawj+Ub/eyZeYy1wrGt4hnufiDvOBR+j8rZ9yTUmyKdi4739ra8lCZzl2dOGF2yrHUm00sB+DGxU3TE1YUyF0I/z+pd8KJY5I9Nb3ff5yPvGU6ntjiDhENrscS1lXUXHoJSR4gE/iZPOOStpJvXKIywIkOtZH7hlAwFSGnZ9zqTzn3/3/HP7LRxHUWOm6oyeroJNQr7xw4R+o6dmAj3pIUsnvnWrldyIT+Kc8RbDhczLPdjWp7u7EWJIu0oULeEd9+IcvcKcMB6l5EpoIdDbId+mml1xYuK/7hYqufx4MFM3KQGxFbFF6zKCY9v1pVE674RkEN27PU4aWkj5R1FOVAZgmaxyD3iIStwhvTgFdjFNpAn5IdpTRNmAki/qZb5YBBgvX2EsPv4U7niz6ycVtP/BB+X4ZmuO1gDaC3u7zRvHvBlZynZAdbCzsi9gG6H1OKisbDXidvU5PoXAPzAFu7FDbbL0XaP97hy1QOhKwxBJhzO8xvloYwFqs1u7bdBz5IXFV3DRt/RSgKz6FU0okdKg25vxC+Fq5YC+ncha+B0SVNSn3aXADkhUhgANnaVCnOl/Nrjs5PAzu/KYVxiswerBlBEqs/Q4sW9jeIJ/nJ6V3qHTL6DKSI3ugxh49TQdfRqgNFENk=
