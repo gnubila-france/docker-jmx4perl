@@ -1,33 +1,26 @@
 
-FROM alpine:3.8
+FROM ubuntu:16.04
 
 MAINTAINER Bodo Schulz <bodo@boone-schulz.de>
 
 ENV \
   TERM=xterm \
+  PAGER=cat \
   VERSION=1.12
 
 # ---------------------------------------------------------------------------------------
 
 RUN \
-  apk --quiet --no-cache update && \
-  apk --quiet --no-cache upgrade && \
-  apk add --quiet --virtual .build-deps \
-    build-base \
-    perl-dev \
-    readline-dev \
-    ncurses-dev \
-    libxml2-dev \
-    expat-dev \
-    gnupg1 \
-    openssl-dev \
-    wget && \
-  apk --quiet --no-cache add \
+  apt-get update && apt-get install -y \
+    build-essential \
+    openssl \
     perl \
-    readline \
-    ncurses-libs && \
+    libssl-dev \
+    libreadline-dev \
+    libexpat1-dev && \
   cpan App::cpanminus < /dev/null && \
   cpanm --quiet --notest \
+    LWP::Protocol::https \
     IO::Socket::Multicast \
     Config::General \
     Crypt::Blowfish_PP \
@@ -42,12 +35,14 @@ RUN \
     Term::Size \
     Net::HTTP \
     ROLAND/jmx4perl-${VERSION}.tar.gz && \
-    apk del --quiet --purge .build-deps && \
+    apt-get -y purge build-essential libssl-dev libreadline-dev libexpat1-dev && \
+    apt-get -y autoremove && \
   rm -rf \
     /root/.cpanm \
     /tmp/* \
-    /var/cache/apk/*
+    /var/lib/apt/lists/*
 
 CMD [ "jmx4perl", "--version" ]
 
 # ---------------------------------------------------------------------------------------
+
